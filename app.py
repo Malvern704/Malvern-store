@@ -1,20 +1,22 @@
+import os
+import json
 import openai
-openai.api_key = 'your_openai_api_key'  # 🔐 Replace with your actual key
-
 from flask import Flask, render_template, redirect, url_for, request, session
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_mail import Mail, Message
-import json
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = os.environ.get('SECRET_KEY', 'default_secret')  # 🔁 Secure key fallback
 
 # --- Flask-Mail setup ---
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'your_email@gmail.com'       # Replace
-app.config['MAIL_PASSWORD'] = 'your_app_password'          # Replace
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')  # 🔁 From env
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')  # 🔁 From env
 
 mail = Mail(app)
 
@@ -45,7 +47,7 @@ def load_products():
 def get_recommendations(cart):
     products = load_products()
     recommended = [p for p in products if str(p['id']) not in cart]
-    return recommended[:3]  # Return top 3 not in cart
+    return recommended[:3]
 
 # --- Routes ---
 @app.route('/')
@@ -132,14 +134,12 @@ def place_order():
 
     session['cart'] = {}
 
-    # --- Compose email content ---
     item_lines = [f"{item['name']} (x{item['quantity']}) - ${item['total']}" for item in selected_items]
     body = f"Hi {current_user.id},\n\nThanks for your order!\n\nYour items:\n" + "\n".join(item_lines) + f"\n\nTotal: ${round(total, 2)}\n\n— Malvern Store"
 
-    # --- Send email ---
     msg = Message("Your Malvern Store Order Confirmation",
-                  sender="your_email@gmail.com",                    # Replace
-                  recipients=["recipient@example.com"],            # Replace
+                  sender=app.config['MAIL_USERNAME'],  # 🔁 Use env sender
+                  recipients=["recipient@example.com"],  # 💡 Later you can use a user-provided email
                   body=body)
     mail.send(msg)
 
@@ -161,8 +161,8 @@ def contact():
 
         msg_body = f"Message from {name} <{email}>:\n\n{message}"
         msg = Message("New Contact Message",
-                      sender="your_email@gmail.com",
-                      recipients=["your_email@gmail.com"],
+                      sender=app.config['MAIL_USERNAME'],  # 🔁 Use env sender
+                      recipients=[app.config['MAIL_USERNAME']],  # 🔁 Self-send
                       body=msg_body)
         mail.send(msg)
 
@@ -174,13 +174,16 @@ def chat():
     reply = ""
     if request.method == 'POST':
         user_message = request.form['message']
-        response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo',
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": user_message}]
         )
         reply = response.choices[0].message.content
     return render_template('chat.html', reply=reply)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(debug=True, host='0.0.0.0', port=port)
+
+
 
