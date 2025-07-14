@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Basket</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Your Basket</h1>
+  {% if items %}
+    <table>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+      </tr>
+      {% for item in items %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>${{ item.price }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    <h3>Total: ${{ total }}</h3>
+    <form method="post" action="/place_order">
+      <button type="submit">Pay Now</button>
+    </form>
+  {% else %}
+    <p>Your basket is empty.</p>
+  {% endif %}
+  <a href="{{ url_for('home') }}">Back to Home</a>
+</body>
+</html>

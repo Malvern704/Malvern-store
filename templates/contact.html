@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contact Us</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>Contact Malvern Store</h2>
+  <form method="post">
+    <input name="name" placeholder="Your Name" required><br>
+    <input name="email" placeholder="Your Email" required><br>
+    <textarea name="message" placeholder="Your Message" rows="5" required></textarea><br>
+    <button type="submit">Send</button>
+  </form>
+  <a href="{{ url_for('home') }}">Back to Home</a>
+</body>
+</html>

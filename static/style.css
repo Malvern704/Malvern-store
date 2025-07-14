@@ -1,0 +1,46 @@
+body {
+  font-family: sans-serif;
+  background: linear-gradient(to right, #d2d8ff, #e8f0ff);
+  padding: 30px;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+}
+
+.product {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 20px;
+  display: inline-block;
+  background: #fff;
+  box-shadow: 2px 2px 8px #aaa;
+  width: 200px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+table {
+  width: 60%;
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  margin: 10px;
+  cursor: pointer;
+}
+

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat with Malvern AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>Talk to our AI Assistant</h2>
+  <form method="post">
+    <textarea name="message" placeholder="Ask anything..." rows="4" cols="50" required></textarea><br>
+    <button type="submit">Send</button>
+  </form>
+  {% if reply %}
+    <h3>Malvern AI says:</h3>
+    <p>{{ reply }}</p>
+  {% endif %}
+  <a href="{{ url_for('home') }}">Back to Home</a>
+</body>
+</html>

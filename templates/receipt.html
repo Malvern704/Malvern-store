@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Receipt</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Thanks for your order, {{ current_user.id }}!</h1>
+  <p>Here’s a summary of your purchase:</p>
+
+  {% if items %}
+    <table>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Total</th>
+      </tr>
+      {% for item in items %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.total }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+    <h3>Grand Total: ${{ total }}</h3>
+  {% else %}
+    <p>You didn’t have any items in your basket!</p>
+  {% endif %}
+  <a href="{{ url_for('home') }}">Return to Home</a>
+</body>
+</html>

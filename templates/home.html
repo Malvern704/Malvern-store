@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Malvern Store</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Welcome to Malvern Store</h1>
+
+  {% if current_user.is_authenticated %}
+    <p>Logged in as {{ current_user.id }} |
+       <a href="{{ url_for('logout') }}">Logout</a> |
+       <a href="{{ url_for('checkout') }}">Go to Checkout</a></p>
+  {% else %}
+    <p>
+      <a href="{{ url_for('login') }}">Login</a> |
+      <a href="{{ url_for('register') }}">Register</a>
+    </p>
+  {% endif %}
+
+  <div class="store">
+    {% for item in products %}
+      <div class="product">
+        <img src="{{ item.image }}" alt="{{ item.name }}">
+        <h3>{{ item.name }}</h3>
+        <p>${{ item.price }}</p>
+        {% if current_user.is_authenticated %}
+          <form method="post" action="/add_to_cart">
+            <input type="hidden" name="product_id" value="{{ item.id }}">
+            Quantity: <input type="number" name="quantity" value="1" min="1">
+            <button type="submit">Add to Basket</button>
+          </form>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>
+<p><a href="{{ url_for('contact') }}">Contact Us</a></p>
+<h2>Smart Picks for You</h2>
+<div class="recommendation-section">
+  {% for item in recommended %}
+    <div class="product">
+      <img src="{{ item.image }}" alt="{{ item.name }}">
+      <h4>{{ item.name }}</h4>
+      <p>${{ item.price }}</p>
+      <form method="post" action="/add_to_cart">
+        <input type="hidden" name="product_id" value="{{ item.id }}">
+        Quantity: <input type="number" name="quantity" value="1" min="1">
+        <button type="submit">Add to Basket</button>
+      </form>
+    </div>
+  {% endfor %}
+</div>
+<p><a href="{{ url_for('chat') }}">Chat with AI Assistant</a></p>
